@@ -18,6 +18,7 @@
     "typescript": "^5.7.3"
   },
   "dependencies": {
+    "db-local": "^3.1.0",
     "express": "4.21.2"
   }
 }

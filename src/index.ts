@@ -1,5 +1,6 @@
 import express from 'express'
 import { PORT } from './config'
+import { UserRepository } from './user.repository'
 //import diaryRouter from './routes/diaries'
 
 const app = express()
@@ -10,7 +11,18 @@ app.get('/ping', (_req, res) => {
 })
 
 app.post('/login', (_req, _res) => {})
-app.post('/register', (_req, _res) => {})
+
+app.post('/register', (req, res) => {
+  const { username, password } = req.body
+  console.log(username, password)
+  try {
+    const id = UserRepository.create({ username, password })
+    res.send({ id })
+  } catch(error: any) {
+    res.status(400).send(error.message)
+  }
+})
+
 app.post('/logout', (_req, _res) => {})
 
 app.post('/protected', (_req, _res) => {})
