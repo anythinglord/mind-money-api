@@ -1,9 +1,11 @@
 import express from 'express';
 import { PORT } from './config';
 import userRouter from './routes/user.route';
+import cookieParser from "cookie-parser";
 
 const app = express()
 app.use(express.json()) // middleware -> transform the req.body to json
+app.use(cookieParser())
 app.use("/api/v1/users", userRouter)
 
 app.get('/ping', (_req, res) => {
