@@ -1,4 +1,4 @@
-import DBLocal from 'db-local'
+/*import DBLocal from 'db-local'
 import crypto from 'crypto'
 const { Schema } = new DBLocal({ path: './db' })
 
@@ -36,4 +36,4 @@ export class UserRepository {
     }
 
     //static login({ username, password }: CreateUserDTO) {}
-}
+}*/
