@@ -15,6 +15,4 @@ app.use(cookieParser())
 app.use("/api/v1/users", userRouter)
 app.use("/api/v1/workspaces", workSpaceRouter)
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
+app.listen(PORT, () => {})
