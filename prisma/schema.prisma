@@ -33,10 +33,13 @@ model WorkSpace {
 model Item {
   id       String  @id @default(auto()) @map("_id") @db.ObjectId
   name     String
+  amount   Int
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt 
   category String
   type     String
+  workspace     WorkSpace    @relation(fields: [workSpaceId], references: [id])
+  workSpaceId   String  @db.ObjectId
 }
 
 
