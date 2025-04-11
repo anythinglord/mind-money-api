@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/prisma";
 
-export const getExpenses = async (req: Request, res: Response) => {
+export const getExpenses = async (_req: Request, res: Response) => {
     try{
         
         // item with type == 'expenses'

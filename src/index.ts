@@ -13,6 +13,11 @@ app.use(cors({
 }));
 app.use(express.json()) // middleware -> transform the req.body to json
 app.use(cookieParser())
+
+app.use("/api/v1/status", (_req, res) => {
+  res.json({ message: 'api ok' })
+})
+
 app.use("/api/v1/users", userRouter)
 app.use("/api/v1/workspaces", workSpaceRouter)
 app.use("/api/v1/expenses", ExpenseRouter)
