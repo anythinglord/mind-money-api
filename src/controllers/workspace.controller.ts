@@ -12,10 +12,9 @@ export const getWorkSpaces = async (_req: Request, res: Response) => {
 
 export const createWorkSpace = async (req: Request, res: Response) => {
     try{
-        console.log('hi from there')
         const { name } = req.body
         
-        // Verify if the users exists
+        // Verify if the workspace exists
         const existingWorkSpace = await prisma.workSpace.findFirst({ where: { userId: '67e418dc01973b02a0c004cb' } });
         if (existingWorkSpace) {
             res.status(400).json({ message: "WorkSpace already exists" });
