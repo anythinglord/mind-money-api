@@ -7,10 +7,12 @@ import ExpenseRouter from './routes/expense.route';
 import cors from "cors";
 
 const app = express()
+
 app.use(cors({
-  origin: "http://localhost:5173", // enable only client
+  origin: "https://mind-money-993vsqo98-anythinglords-projects.vercel.app/", // enable only client
   credentials: true, // enable cookies and autenticación
 }));
+
 app.use(express.json()) // middleware -> transform the req.body to json
 app.use(cookieParser())
 
