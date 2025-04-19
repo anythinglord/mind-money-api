@@ -8,13 +8,19 @@ interface AuthRequest extends Request {
 export const authenticate = (req: AuthRequest, res: Response, next: NextFunction) => {
     
     const token = req.cookies.access_token
+    const refreshToken = req.cookies.refresh_token
+
     if (!token)  {
-        res.status(403).json({ message: "Access not authorized" });
-        return
+        if (!refreshToken) {
+            res.status(403).json({ message: "Access not authorized" });
+            return
+        }
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+        const goodToken = token ?? refreshToken
+        const secret = token ? process.env.JWT_SECRET : process.env.JWT_SECRETR
+        const decoded = jwt.verify(goodToken, secret as string);
         req.user = decoded;
         next();
     } catch (error) {
