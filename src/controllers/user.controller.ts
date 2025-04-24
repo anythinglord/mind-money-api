@@ -97,6 +97,34 @@ export const login = async (req: Request, res: Response) => {
     }
 }
 
+export const verifyEmail = async (req: Request, res: Response) => {
+    try {
+        const { email } = req.body
+        
+        // Verify if the account exists
+        const existingUser = await prisma.user.findUnique({ where: { email } });
+        
+        if (!existingUser) {
+            res.status(400).json({ message: "account not found" });
+            return
+        }
+        
+        res.status(201).json({ message: "account found" })
+    } catch (error) {
+        res.status(500).json({ message: "Server error" })
+    }
+}
+
+export const forgotpassword = async (_req: Request, res: Response) => {
+    try {
+        /* 
+            
+        */
+    } catch (error) {
+        res.status(500).json({ message: "Server error" })
+    }
+}
+
 export const logout = async (_req: Request, res: Response) => {
     try {
         res.clearCookie('refresh_token')
