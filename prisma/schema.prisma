@@ -23,6 +23,14 @@ model User {
   workspaces  WorkSpace[]
 }
 
+model OtpToken {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  otp       String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
 model WorkSpace {
   id       String  @id @default(auto()) @map("_id") @db.ObjectId
   name     String
