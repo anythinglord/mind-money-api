@@ -21,7 +21,7 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
         const goodToken = token ?? refreshToken
         const secret = token ? process.env.JWT_SECRET : process.env.JWT_SECRETR
         const decoded = jwt.verify(goodToken, secret as string);
-        req.user = decoded;
+        req.body.user = decoded;
         next();
     } catch (error) {
         res.status(400).json({ message: "Invalid Token" });
