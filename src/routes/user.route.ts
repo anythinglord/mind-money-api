@@ -7,7 +7,7 @@ const userRouter = express.Router();
 
 userRouter.post("/signup", signup);
 userRouter.post("/login", login);
-userRouter.post("/logout", logout);
+userRouter.get("/logout", logout);
 userRouter.post("/forgot_password", forgotPassword);
 userRouter.post("/verify_otp", verifyOtp);
 userRouter.post("/reset_password", resetPassword, tempAuthenticate);
