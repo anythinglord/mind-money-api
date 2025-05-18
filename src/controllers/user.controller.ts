@@ -12,8 +12,8 @@ const resend = new Resend(process.env.RESEND_KEY as string);
 export const verifySession = async (_req: Request, res: Response) => {
     try {
         res.json({ 
-            message: 'valid session'  
-        });
+            message: 'valid session',
+        });    
     } catch (error) {
         res.status(500).json({ message: "Server error" })
     }
@@ -103,7 +103,6 @@ export const login = async (req: Request, res: Response) => {
 export const forgotPassword = async (req: Request, res: Response) => {
     try {
         const { email, refresh } = req.body
-        console.log('temail.', email)
         // Verify if the account exists
         const existingUser = await prisma.user.findUnique({ where: { email } });
         
@@ -114,14 +113,20 @@ export const forgotPassword = async (req: Request, res: Response) => {
         const { otp, expiresAt } = generateOTP();
         resend.emails.send({
             from: 'onboarding@resend.dev',
-            to: 'backups217@gmail.com',
-            subject: 'Request to reset password',
+            to: email,
+            subject: `MindMoney Login: Here's the 6-digit verification code you requested`,
             html: `
-                <h1>PASSWORD CHANGE REQUEST</h1>
-                <p>We have received a request to change the password for your account of MindMoney.</p>
-                <p>please insert the ${otp} code to follow with the process</p>
-                <p>This code will expire in 5 minutes. If you haven't requested a password change, 
-                please ignore this email and no changes will be made to your account.</p>
+                <div style="display: flex; justify-content: center; background-color: #f3f0f0; font-size: 17px;">
+                    <div style="background-color: #fff; width: 500px; margin: 30px 15px; padding: 25px;">
+                        <h3 style="border-bottom: 1px solid #eee;">Mind Money</h3>
+                        <p>Hi,</p>
+                        <div style="display: flex; justify-content: center; background-color: #f3f0f0; padding: 10px;">
+                            <b style="font-size: 30px;">${otp}</b>
+                        </div>
+                        <p>Use the code below to log in to your Mind Money account</p>
+                        <p>This code expires in 1 minute.</p>
+                    </div>
+                </div>
             `
         });
 
@@ -172,6 +177,24 @@ export const verifyOtp = async (req: Request, res: Response) => {
                 message: 'otp verification successfully', 
             });
 
+    } catch (error) {
+        res.status(500).json({ message: "Server error" })
+    }
+}
+
+export const resetPassword = async (req: Request, res: Response) => {
+    try {
+        const { email, password } = req.body
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await prisma.user.update({
+            where: {
+              email: email,
+            },
+            data: {
+              password: hashedPassword || undefined,
+            },
+          })
+        res.status(201).json({ message: "change successfully" })
     } catch (error) {
         res.status(500).json({ message: "Server error" })
     }
