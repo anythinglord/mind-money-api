@@ -9,11 +9,16 @@ const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const resend = new Resend(process.env.RESEND_KEY as string);
 
 
-export const verifySession = async (_req: Request, res: Response) => {
+export const verifySession = async (req: Request, res: Response) => {
     try {
-        res.json({ 
-            message: 'valid session',
-        });    
+        const { user } = req.body
+        if (user) {
+            res.json({ 
+                message: 'valid session',
+                userId: user.userId
+            });    
+        }
+        
     } catch (error) {
         res.status(500).json({ message: "Server error" })
     }
@@ -85,7 +90,7 @@ export const login = async (req: Request, res: Response) => {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'strict',
-                maxAge: 24 * 60 * 60 * 1000  // valid until 5 min
+                maxAge: 24 * 60 * 60 * 1000  // valid one day
             })
             .json({ 
                 message: 'Login successfully', 
@@ -202,9 +207,8 @@ export const resetPassword = async (req: Request, res: Response) => {
 
 export const logout = async (_req: Request, res: Response) => {
     try {
+        res.clearCookie('access_token')
         res.clearCookie('refresh_token')
-        res
-            .clearCookie('access_token')
             .json({ message: 'Logout successfully', user: null });
     } catch (error) {
         res.status(500).json({ message: "Server error" })
