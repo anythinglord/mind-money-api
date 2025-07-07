@@ -30,9 +30,37 @@ export const createExpense = async (req: Request, res: Response) => {
             id: expense.id,
             name: expense.name,
             amount: expense.amount,
-            category: expense.category
+            category: expense.category,
+            createdAt: expense.createdAt
         })
     }catch (error){
+        res.status(500).json({ message: error })
+    }
+}
+
+export const modifyExpense = async (req: Request, res: Response) => {
+    try {
+        const { id, name, amount, category } = req.body
+        const data: Record<string, any> = {};
+
+        // include only the needed fields
+        if (name !== '') data.name = name;
+        if (amount !== '') data.amount = parseInt(amount);
+        data.category = category
+        
+        // update the item
+        await prisma.item.update({
+            where: { id: id },
+            data: data
+        })
+        
+        // find and return the item updated
+        const item = await prisma.item.findUnique({
+            where: { id: id },
+        })
+        res.status(201).json(item)
+
+    } catch (error) {
         res.status(500).json({ message: error })
     }
 }
