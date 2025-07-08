@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/prisma";
+import { getHighestCategory, getItemsByCategory, getTotalAmount, getTotalCurrentAmount } from "../util";
+import { Categories } from "../data";
 
 export const getExpenses = async (req: Request, res: Response) => {
     try{
@@ -62,5 +64,30 @@ export const modifyExpense = async (req: Request, res: Response) => {
 
     } catch (error) {
         res.status(500).json({ message: error })
+    }
+}
+
+export const getStats = async (req: Request, res: Response) => {
+    try{
+        // item with type == 'expenses'
+        const expenses = await prisma.item.findMany({
+            where: {
+                type: 'expenses',
+                workSpaceId: req.params.workSpaceId
+            },
+        });
+
+        const categoryItems = getItemsByCategory(expenses, Categories)
+        const totalExpenses = getTotalAmount(expenses)
+        const highestCategory = getHighestCategory(categoryItems)
+        const totalCurrentExpenses = getTotalCurrentAmount(expenses) 
+        
+        res.json({ 
+            total: totalExpenses,
+            highestCategory: highestCategory,
+            totalCurrentMonth: totalCurrentExpenses
+        })
+    }catch (error){
+        res.status(500).json({ message: 'Error creating expense' })
     }
 }
