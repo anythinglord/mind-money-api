@@ -4,10 +4,10 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { getRandomUID, generateOTP } from "../util";
 import { Resend } from 'resend';
+import { RESEND_KEY } from '../config/env'
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-const resend = new Resend(process.env.RESEND_KEY as string);
-
+const resend = new Resend(RESEND_KEY as string);
 
 export const verifySession = async (req: Request, res: Response) => {
     try {
