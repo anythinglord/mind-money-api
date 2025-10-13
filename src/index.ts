@@ -1,4 +1,5 @@
 import express from 'express';
+import dotenv from 'dotenv';
 import { PORT } from './config';
 import userRouter from './routes/user.route';
 import cookieParser from "cookie-parser";
@@ -7,6 +8,7 @@ import ExpenseRouter from './routes/expense.route';
 import cors from "cors";
 
 const app = express()
+dotenv.config();
 app.use(cors({
   origin: "http://localhost:5173", // enable only client
   credentials: true, // enable cookies and autenticación
