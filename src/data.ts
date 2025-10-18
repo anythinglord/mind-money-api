@@ -1,3 +1,3 @@
 export const Categories: string[] = [
-    'Food', 'Utilities', 'Transportation', 'Entertainment'
+    'All categories', 'Food', 'Credit', 'Services', 'Health', 'General', 'Returns'
 ]

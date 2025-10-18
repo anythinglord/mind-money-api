@@ -14,17 +14,19 @@ export const getExpenses = async (req: Request, res: Response) => {
         });
         res.json({ expenses: expenses })
     }catch (error){
-        res.status(500).json({ message: 'Error creating expense' })
+        console.log(error)
+        res.status(500).json({ message: 'Error getting expenses' })
     }
 }
 
 export const createExpense = async (req: Request, res: Response) => {
     try{
-        const { name, amount, category } = req.body
+        const { name, amount, category, validAt, recurrence } = req.body
         const expense = await prisma.item.create({
             data: { 
-                name, amount: parseInt(amount), category, type: 'expenses', 
-                workSpaceId: '67f9274880d73be2ade586aa' 
+                name, amount: parseInt(amount), category, 
+                validAt: new Date(validAt), recurrence,
+                type: 'expenses', workSpaceId: '67f9274880d73be2ade586aa'
             },
         })
         res.status(201).json({ 
@@ -33,9 +35,12 @@ export const createExpense = async (req: Request, res: Response) => {
             name: expense.name,
             amount: expense.amount,
             category: expense.category,
-            createdAt: expense.createdAt
+            createdAt: expense.createdAt,
+            validAt: expense.validAt,
+            recurrence: expense.recurrence
         })
     }catch (error){
+        console.log(error)
         res.status(500).json({ message: error })
     }
 }
@@ -82,7 +87,7 @@ export const getStats = async (req: Request, res: Response) => {
         const highestCategory = getHighestCategory(categoryItems)
         const totalCurrentExpenses = getTotalCurrentAmount(expenses) 
         
-        res.json({ 
+        res.status(201).json({ 
             total: totalExpenses,
             highestCategory: highestCategory,
             totalCurrentMonth: totalCurrentExpenses
