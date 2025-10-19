@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/prisma";
-import { getHighestCategory, getItemsByCategory, getTotalAmount, getTotalCurrentAmount } from "../util";
-import { Categories } from "../data";
+import { getStats } from "../services/expense.service"
 
 export const getExpenses = async (req: Request, res: Response) => {
     try{
@@ -22,22 +21,28 @@ export const getExpenses = async (req: Request, res: Response) => {
 export const createExpense = async (req: Request, res: Response) => {
     try{
         const { name, amount, category, validAt, recurrence } = req.body
+        const workSpaceId = '67f9274880d73be2ade586aa'
         const expense = await prisma.item.create({
             data: { 
                 name, amount: parseInt(amount), category, 
                 validAt: new Date(validAt), recurrence,
-                type: 'expenses', workSpaceId: '67f9274880d73be2ade586aa'
+                type: 'expenses', workSpaceId: workSpaceId
             },
         })
         res.status(201).json({ 
             message: "Expense created successfully",
-            id: expense.id,
-            name: expense.name,
-            amount: expense.amount,
-            category: expense.category,
-            createdAt: expense.createdAt,
-            validAt: expense.validAt,
-            recurrence: expense.recurrence
+            data: {
+                item: {
+                    id: expense.id,
+                    name: expense.name,
+                    amount: expense.amount,
+                    category: expense.category,
+                    createdAt: expense.createdAt,
+                    validAt: expense.validAt,
+                    recurrence: expense.recurrence
+                },
+                stats: await getStats(workSpaceId, '')
+            }
         })
     }catch (error){
         console.log(error)
@@ -72,27 +77,14 @@ export const modifyExpense = async (req: Request, res: Response) => {
     }
 }
 
-export const getStats = async (req: Request, res: Response) => {
+export const getExpensesStats = async (req: Request, res: Response) => {
     try{
-        // item with type == 'expenses'
-        const expenses = await prisma.item.findMany({
-            where: {
-                type: 'expenses',
-                workSpaceId: req.params.workSpaceId
-            },
-        });
-
-        const categoryItems = getItemsByCategory(expenses, Categories)
-        const totalExpenses = getTotalAmount(expenses)
-        const highestCategory = getHighestCategory(categoryItems)
-        const totalCurrentExpenses = getTotalCurrentAmount(expenses) 
-        
-        res.status(201).json({ 
-            total: totalExpenses,
-            highestCategory: highestCategory,
-            totalCurrentMonth: totalCurrentExpenses
-        })
+        const workSpaceId = req.params.workSpaceId
+        const categoryQuery = req.query.category as string;
+        const category: string = categoryQuery
+        const expensesStats = await getStats(workSpaceId, category)
+        res.status(201).json(expensesStats)
     }catch (error){
-        res.status(500).json({ message: 'Error creating expense' })
+        res.status(500).json({ message: 'Error getting expense stats' })
     }
 }

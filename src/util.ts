@@ -57,13 +57,13 @@ export const getTotalAmount = (items: Item[]) => {
 }
 
 /**
- * Get Total expenses from the current month
+ * Get Total amount`s expenses until today
  * @param {Item[]} items 
  * @returns {number} total
  */
-export const getTotalCurrentAmount = (items: Item[]) => {
-    const currentMonth = new Date().getMonth() + 1
-    const currentItems = items.filter(item => item.createdAt.getMonth() + 1 === currentMonth)
+export const getUntilTodayAmount = (items: Item[]) => {
+    const today = new Date().getUTCDate()
+    const currentItems = items.filter(item => item.validAt.getUTCDate() <= today)
     return getTotalAmount(currentItems)
 }
 
@@ -81,4 +81,15 @@ export const getHighestCategory = (grouped: GroupedItems) => {
         } 
     )
     return maxKey
+}
+
+/**
+ * Get total amount of expenses grouped by a category
+ * @param items 
+ * @param category 
+ * @returns 
+ */
+export const getSelectedAmount = (items: Item[], category: string) => {
+    const selected = items.filter(item => item.category === category)
+    return getTotalAmount(selected)
 }
