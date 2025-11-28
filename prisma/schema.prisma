@@ -47,7 +47,7 @@ model Item {
   updatedAt  DateTime   @updatedAt
   validAt    DateTime   @default(now())
   recurrence String     @default("One time") 
-  category   String
+  category   String?     
   type       String
   workspace     WorkSpace    @relation(fields: [workSpaceId], references: [id])
   workSpaceId   String  @db.ObjectId

@@ -15,12 +15,10 @@ export const getStats  = async (workSpaceId: string, category: string = '') => {
     const highestCategory = getHighestCategory(categoryItems)
     const untilTodayAmount = getUntilTodayAmount(expenses)
     let totalSelectedAmount = 0 
-    console.log(category !== '', category)
     if (category !== '') {
-        console.log('entry')
         totalSelectedAmount = getSelectedAmount(expenses, category) 
     }
-    console.log(totalSelectedAmount)
+    
     return{ 
         total: totalExpenses,
         highestCategory: highestCategory,
